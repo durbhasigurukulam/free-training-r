@@ -29,7 +29,10 @@ const loginMiddleware = async (req, res, next) => {
 // Middleware to check token
 const tokenMiddleware = async (req, res, next) => {
   const authToken = req.headers['authtoken'];
-  const session = await Session.findById(authToken);
+  const session = await Session.find({"_id":authToken});
+  // console.log(session);
+  req.user_id = session[0].user_id;
+  
   if (session) {
     next();
   } else {
@@ -78,7 +81,8 @@ app.post('/login', loginMiddleware, (req, res) => {
 
 // Protected route
 app.get('/protected', tokenMiddleware, (req, res) => {
-  res.send('This is a protected route.');
+  // user_id
+  res.send('user_id'+ req.user_id);
 });
 
 
